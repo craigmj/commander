@@ -18,12 +18,12 @@ type Command struct {
 }
 
 // NewCommand creates a new comandeer Command struct with the given parameters.
-func NewCommand(cmd, description string, flagset *flag.FlagSet, f func() error) *Command {
+func NewCommand(cmd, description string, flagset *flag.FlagSet, f func(args []string) error) *Command {
 	return &Command{ cmd, description, flagset, f }
 }
 
 // CommandFunction returns a command
-type CommandFunction func() *Command
+type CommandFunction func(args []string) *Command
 
 // Execute takes an args array, and executes the appropriate command from the 
 // array of commandFunctions. If nil is passed as the args array, os.Args is used
@@ -61,8 +61,9 @@ func Execute(args []string, commandFns ...CommandFunction) error {
 	if !ok {
 		return fmt.Errorf("Unrecognized command: %s", args[0])
 	}
+	args = args[1:]
 	if nil!=c.FlagSet {
-		c.FlagSet.Parse(args[1:])
+		c.FlagSet.Parse(args)
 	}
-	return c.F()
+	return c.F(args)
 }
