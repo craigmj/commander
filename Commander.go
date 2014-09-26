@@ -1,11 +1,14 @@
 package commander
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
 	"strings"
 )
+
+var ErrNothingExecuted = errors.New("No command executed")
 
 // Command wraps together the short command name, the description
 // for a command, the commands Flags and the function that will handle
@@ -14,7 +17,7 @@ type Command struct {
 	Command string
 	Description string
 	FlagSet *flag.FlagSet
-	F func() error
+	F func(args []string) error
 }
 
 // NewCommand creates a new comandeer Command struct with the given parameters.
@@ -46,7 +49,11 @@ func Execute(args []string, commandFns ...CommandFunction) error {
 					fmt.Println("Unrecognized sub-command: ", cmd)
 					continue
 				}
-				cmd.FlagSet.PrintDefaults()
+				if nil!=cmd.FlagSet {
+					cmd.FlagSet.PrintDefaults()
+				} else {
+					fmt.Printf("%s takes no arguments: %s", cmd.Command, cmd.Description)
+				}
 			}
 			return nil
 		}
