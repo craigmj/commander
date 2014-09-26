@@ -26,7 +26,7 @@ func NewCommand(cmd, description string, flagset *flag.FlagSet, f func(args []st
 }
 
 // CommandFunction returns a command
-type CommandFunction func(args []string) *Command
+type CommandFunction func() *Command
 
 // Execute takes an args array, and executes the appropriate command from the 
 // array of commandFunctions. If nil is passed as the args array, os.Args is used
