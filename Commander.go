@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var ErrNothingExecuted = errors.New("No command executed")
+var ErrUnrecognizedCommand = errors.New("No command executed")
 
 // Command wraps together the short command name, the description
 // for a command, the commands Flags and the function that will handle
@@ -66,7 +66,7 @@ func Execute(args []string, commandFns ...CommandFunction) error {
 
 	c, ok := commands[strings.ToLower(args[0])]
 	if !ok {
-		return fmt.Errorf("Unrecognized command: %s", args[0])
+		return ErrUnrecognizedCommand
 	}
 	args = args[1:]
 	if nil!=c.FlagSet {
