@@ -33,12 +33,12 @@ type CommandFunction func() *Command
 // This is useful in a situation where you might execute a command, but don't mind if no command
 // is executed, but want to catch an error if a command fails. This is coded as:
 //
-// if _,err=commander.MightExecute(...); nil!=err {
+// if did,err=commander.MightExecute(...); did&&nil!=err {
 //   panic(err)
 // }
 func MightExecute(args []string, commandFns ...CommandFunction) (bool,error) {
 	err := Execute(args, commandFns...)
-	return err!=ErrUnrecognizedCommand, err
+	return ErrUnrecognizedCommand!=err, err
 }
 
 
@@ -55,7 +55,12 @@ func Execute(args []string, commandFns ...CommandFunction) error {
 		commands[strings.ToLower(cmd.Command)] = cmd
 	}
 
-	if 0==len(args) || strings.ToLower(args[0])=="help" {
+	if 0==len(args) {
+		// We return UnrecognizedCommand if no command exists
+		return ErrUnrecognizedCommand
+	}
+
+	if strings.ToLower(args[0])=="help" {
 		if 1<len(args) {
 			for _, c := range args[1:] {
 				cmd, ok := commands[strings.ToLower(c)]
