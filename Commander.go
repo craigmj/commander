@@ -38,7 +38,7 @@ type CommandFunction func() *Command
 // }
 func MightExecute(args []string, commandFns ...CommandFunction) (bool,error) {
 	err := Execute(args, commandFns...)
-	return e!=ErrUnrecognizedCommand, err
+	return err!=ErrUnrecognizedCommand, err
 }
 
 
