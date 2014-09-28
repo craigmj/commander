@@ -28,21 +28,19 @@ func NewCommand(cmd, description string, flagset *flag.FlagSet, f func(args []st
 // CommandFunction returns a command
 type CommandFunction func() *Command
 
-// Might returns an error only if it was generated in the processing of a command. 
-// If no command was recognized, it returns nil.
+// Might returns a boolean indicating if the command executed, and the error if it did 
+// (which can be nil if no error occurred)
 // This is useful in a situation where you might execute a command, but don't mind if no command
 // is executed, but want to catch an error if a command fails. This is coded as:
 //
-// if err=commander.MightExecute(...); nil!=err {
+// if _,err=commander.MightExecute(...); nil!=err {
 //   panic(err)
 // }
-func MightExecute(args []string, commandFns ...CommandFunction) error {
+func MightExecute(args []string, commandFns ...CommandFunction) (bool,error) {
 	err := Execute(args, commandFns...)
-	if nil==e || e==ErrUnrecognizedCommand {
-		return nil
-	}
-	return err
+	return e!=ErrUnrecognizedCommand, err
 }
+
 
 // Execute takes an args array, and executes the appropriate command from the 
 // array of commandFunctions. If nil is passed as the args array, os.Args is used
