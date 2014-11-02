@@ -45,7 +45,7 @@ func MightExecute(args []string, commandFns ...CommandFunction) (bool,error) {
 // and has an associated error handler if an error occurs.
 // It returns true if a command was executed, false otherwise.
 func MightExecuteWithErrorHandler(errHandler func (err error), args[] string, commandFns ...CommandFunction) bool {
-	b, err := MighExecute(args, commandFns...)
+	b, err := MightExecute(args, commandFns...)
 	if b && nil!=err && ErrUnrecognizedCommand!=err {
 		errHandler(err)
 	}
