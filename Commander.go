@@ -101,6 +101,7 @@ func Execute(args []string, commandFns ...CommandFunction) error {
 	args = args[1:]
 	if nil!=c.FlagSet {
 		c.FlagSet.Parse(args)
+		args = c.FlagSet.Args()
 	}
 	return c.F(args)
 }
