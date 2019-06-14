@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"sort"
 )
 
 var ErrUnrecognizedCommand = errors.New("No command executed")
@@ -18,6 +19,20 @@ type Command struct {
 	Description string
 	FlagSet     *flag.FlagSet
 	F           func(args []string) error
+}
+
+type CommandList []*Command
+
+func (cl CommandList) Len() int {
+	return len(cl)
+}
+func (cl CommandList) Less(i, j int) bool {
+	clp := []*Command(cl)
+	return clp[i].Command < clp[j].Command
+}
+func (cl CommandList) Swap(i,j int) {
+	clp := []*Command(cl)
+	clp[i], clp[j] = clp[j], clp[i]
 }
 
 // NewCommand creates a new comandeer Command struct with the given parameters.
@@ -87,7 +102,14 @@ func Execute(args []string, commandFns ...CommandFunction) error {
 			return nil
 		}
 		fmt.Println(`Commands are:`)
+		clp := make([]*Command, len(commands))
+		i := 0
 		for _, c := range commands {
+			clp[i] = c
+			i++
+		}
+		sort.Sort(CommandList(clp))
+		for _, c := range clp {
 			fmt.Printf("%s\t\t%s\n", c.Command, c.Description)
 		}
 		return nil
